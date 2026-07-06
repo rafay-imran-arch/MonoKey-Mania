@@ -1,0 +1,83 @@
+
+
+body {
+    background-color: #f7f5f0;
+    color: #4a3e3d;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+#terminal {
+
+    display: inline-block;
+    border: 2px solid #8c7a6b;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background-color: #fffdf9;
+    box-shadow: 0 4px 0  #8c7a6b, 0 5px 3px rgba(74, 62, 61, 0.3);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+
+    transition: all 0.1s ease;
+    cursor: pointer; 
+}
+
+#terminal:active {
+
+    transform: translateY(4px);
+
+    box-shadow: inset 2px 2px 5px rgba(4,2,1,0.25), 0 1px 2px rgba(74,62,61,0.1);
+}
+
+
+.menu-container {
+    display: 2px dashed #bfae9e;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.card {
+    border: 2px dashed #bfae9e;
+    padding: 20px;
+    width: 40%;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.card-highlighted {
+  border: 2px solid #8c7a6b;
+  background-color: #fbf9f3;
+  transform: scale(1.05);
+  opacity: 1;
+  box-shadow: 0 4px 15px rgba(74,62,61,0.12);
+}
+
+.instructions {
+    color: #8c7a6b;
+    margin-top: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.game-screen {
+    display: none;
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+#key-binder-ovelay {
+    position: fixed;
+    top: 0;
+    left: 0; 
+    width: 100vw;
+    height: 100vh;
+    background-color: rbga(247, 245, 240, 0.96)
+}
