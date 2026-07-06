@@ -1,66 +1,60 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
+<html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <title>MonoKey Mania</title>
-    <script type ="text/javascript" src = "https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
     <link rel="stylesheet" href="src/style.css">
-
 </head>
-
 <body onload="brython()">
     
+    <div id="terminal">
+        <h1>MonoKey Mania</h1>
+        <p style="font-style: italic; color: #8c7a6b; margin-top: -5px; margin-bottom: 5px;">
+            One single key to rule them all!
+        </p>
+        <hr style="border: 1px solid #8c7a6b;">
+
+        <div id="menu-view">
+            <div class="menu-container">
+                <div id="morse-card" class="card">
+                    <h3>1. Morse Course</h3>
+                    <p>Tap for Dot, Hold for Dash.</p>
+                </div>
+                <div id="cubesat-card" class="card">
+                    <h3>2. Landing CubeSAT</h3>
+                    <p>"Control the CubeSAT, DONT SMASH THE PAYLOAD"</p>
+                </div>
+            </div>
+            <p class="instructions">
+                To determine a card choose the respective number from card menu (1 tap = Morse, 2 taps = CubeSAT). Pause 1.5 seconds to launch! <br>
+                Hold key for 5 seconds to reset selection.
+            </p>
+            <hr style="border: 1px solid #9F8C76; margin-top: 20px;">
+        </div>
+
+        <div id="game-view" class="game-screen">
+            <div id="game-title">Loading...</div>
+            <div id="game-content" style="margin-top: 20px; border: 1px solid #8c7a6b; padding: 20px; min-height: 100px;"></div>
+            <p style="font-size: 0.6em; color: #ff3333; margin-top: 20px;">[Refresh page to return to Main Menu]</p>
+        </div>
+    </div>
+
     <div id="key-binder-overlay">
         <div id="binder-box">
             <h2>INITIALIZING INTERFACE...</h2>
-            <p style ="color: #8c7a6b"> Please press the key that you want to use</p>
+            <p style="color: #8c7a6b;">Please press the key that you want to use</p>
             <div id="key-display">AWAITING INPUT....</div>
-            <p style = "font-size: 0.8e; color: #bfae9e;">(Spacebar, Enter or anyother key works!)</p>
+            <p style="font-size: 0.8em; color: #bfae9e;">(Spacebar, Enter or any other key works!)</p>
         </div>
-    </div>
-
-
-    <div id="terminal">
-        <h1>MonoKey Mania</h1>
-        <p style = "font-style: italic; color: #8c7a6b"; margin-top: -5px; margin-bottom: 5px;>
-            One single key to rule them all!</p>
-        <hr style = "border: 1px solid bisque">
-    </div>
-
-    <!--Main Menu system now shall we-->
-    <div id="menu-view">
-        <div id="menu-container">
-            <!-- Option card 1 Morse Course-->
-            <div id="morse-card" class="card">
-                <h3>1. Morse Course</h3>
-                <p>Tap for Dot, Hold for Dash.</p>
-            </div>
-            <!-- Option card 2 Landing CubeSAT-->
-            <div id = "cubesat-card" class="card"">
-                <h3>2. Landing CubeSAT</h3>
-                <p>"Control the CubeSAT, DONT SMASH THE PAYLOAD"</p>
-            </div>
-
-            <p class ="instructions"> To determine a card choice the respective times (1 tap = Morse, 2 taps = CubeSAT). Pause 5 seconds for to launch! <br>
-            Hold [<span class ="chosen-key-name">SPACEBAR</span>] </p>
-            <hr style = "border: 2px solid #9F8C76;">
-        </div>
-    </div>
-
-    <div id="game-view" class="game-screen">
-        <div id="game-title">Loading...</div>
-        <div id="game-content" style=" margin-top: 20px; border: 1px solid #8c7a6b; padding: 20px; min-height: 100px; "></div>
-        <p style="font-size: 0.6em; color: #ff3333; margin-top: 20px;">[Refresh page to return to Main Menu</p>
     </div>
 
     <script type="text/python">
-        from browser import document 
+        from browser import document, window 
         import time 
-
         import src.morse as morse
 
-        cards = ["morse-card","cubesat-card"]
+        cards = ["morse-card", "cubesat-card"]
         in_game = False
         TARGET_KEY = None
         active_game = None 
@@ -68,73 +62,76 @@
         tap_count = 0
         action_timer = None
         press_start_time = 0
+        just_bound = False
 
         def launch_game(game_id):
-            global in game, acive_game
+            global in_game, active_game
             in_game = True
-            document = ['menu-view'].style.display = "none"
-            document = ["game-view"].style.display = "block"
+            document['menu-view'].style.display = "none"
+            document["game-view"].style.display = "block"
 
             if game_id == "morse-card":
                 active_game = "morse"
-                morse.init.game(TARGET_KEY)
+                morse.init(TARGET_KEY)
             elif game_id == "cubesat-card":
                 active_game = 'CubeSAT'
-                document["game-title"].text = "=== ENGINE 2: Landing CubeSAT"
-                document["game-content"].text = "CubeSAT engine framework initalized!"
+                document["game-title"].text = "=== ENGINE 2: Landing CubeSAT ==="
+                document["game-content"].text = "CubeSAT engine framework initialized!"
 
         def check_selection():
-        global tap_count 
-        target_index = tap_count -1 
-        if 0 <= target_index < len(cards):
-            launch_game(cards[target_index])
-        else:
-            reset_menu()
+            global tap_count 
+            target_index = tap_count - 1 
+            if 0 <= target_index < len(cards):
+                launch_game(cards[target_index])
+            else:
+                reset_menu()
 
         def reset_menu():
-            global tap_count = 0
+            global tap_count
+            tap_count = 0
             for card_id in cards:
-                document[card_id].classlist.remove("highlighted")
+                document[card_id].className = "card"
 
         def handle_keydown(event):
-            global TARGET_KEY, tap_count, action_timer, press_start_time
+            global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
 
-            #Binding the key
             if TARGET_KEY is None:
                 event.preventDefault()
                 TARGET_KEY = event.code
                 display_name = event.key.upper() if event.key != " " else "SPACEBAR"
-                for el in document.select(".chosen-key-name"):
-                    el.text = display_name
+                document["key-display"].text = display_name
                 document["key-binder-overlay"].style.display = "none"
+                just_bound = True
                 return
 
-            #key actions when in game
             if in_game:
                 if event.code == TARGET_KEY:
                     event.preventDefault()
                     if active_game == "morse":
-                        morse.start_pressed()
+                        morse.start_press()
                 return
 
-            # The menu navigation
             if event.code == TARGET_KEY:
                 event.preventDefault()
                 if press_start_time == 0:
                     press_start_time = time.time()
                 if action_timer:
-                    window.clearTimeout(action_timer
-                    
-                    )
+                    window.clearTimeout(action_timer)
+
         def handle_keyup(event):
-            global TARGET_KEY, tap_count, action_timer, press_start_time
+            global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
             
             if TARGET_KEY and event.code == TARGET_KEY:
+                if just_bound:
+                    just_bound = False
+                    return
+
                 if in_game:
                     event.preventDefault()
                     if active_game == "morse":
                         morse.stop_press()
                     return
+                
                 duration = time.time() - press_start_time
                 press_start_time = 0
 
@@ -144,19 +141,15 @@
 
                 tap_count += 1
                 for i, card_id in enumerate(cards):
-                    if i == (tap_count - 1)
-                        document[card_id].classlist.add("highlighted")
+                    if i == (tap_count - 1):
+                        document[card_id].className = "card highlighted"
                     else:
-                        document[card_id].classlist.remove("highlighted")
+                        document[card_id].className = "card"
 
                 action_timer = window.setTimeout(check_selection, 1500)
             
-            window.bind("keydown", handle_keydown)
-            window.bind("keyup", handle_keyup)
+        window.bind("keydown", handle_keydown)
+        window.bind("keyup", handle_keyup)
     </script>
-
 </body>
-=======
-
-
->>>>>>> 46c86b6d9035225387f8893816b9e35e13c74a3c
+</html>
