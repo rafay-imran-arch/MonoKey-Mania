@@ -95,3 +95,16 @@ body {
 @keyframes blinker {
     50% { opacity: 0.4; }
 }
+
+#controller-input {
+    margin-top: 20px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1em;
+    text-align: center;
+    border: 2px solid #8c7a6b;
+    background-color: #fffdf9;
+    color: #4a3e3d;
+    width: 80%;
+    display: none;
+}

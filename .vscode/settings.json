@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [],
+    "python.analysis.ignoredfFiles": [],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
+    }
+}
