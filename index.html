@@ -14,18 +14,29 @@
         <p style="font-style: italic; color: #8c7a6b; margin-top: -5px; margin-bottom: 5px;">
             One single key to rule them all!
         </p>
-        <hr style="border: 1px solid #8c7a6b;">
-
+        <hr style="border: 1px solid #8c7a6b;"> 
+        <!--Menu-->
         <div id="menu-view">
             <div class="menu-container">
+
+                <!--The morse program card-->
                 <div id="morse-card" class="card">
                     <h3>1. Morse Course</h3>
                     <p>Tap for Dot, Hold for Dash.</p>
                 </div>
+                <!--The CubeSAT program card (I will switch this to some else ysws)-->
                 <div id="cubesat-card" class="card">
                     <h3>2. Landing CubeSAT</h3>
                     <p>"Control the CubeSAT, DONT SMASH THE PAYLOAD"</p>
                 </div>
+
+                <!--The dice program card-->
+                <div id="dice-card", class="card">
+                    <h3>3. Roll A Dice</h3>
+                    <p>Roll a dice with just ONEKEY... Pretty simple eh?</p>
+                </div>
+                M
+
             </div>
             <p class="instructions">
                 To determine a card choose the respective number from card menu (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
@@ -50,14 +61,15 @@
         </div>
     </div>
     <script type="text/python" src="src/morse.py" id="morse_module"></script>
-
+    <script type="text/python" src="src/dice.py" id="dice_module"></script>
     <script type="text/python">
         from browser import document, window 
         import time 
         
         import morse_module as morse
+        import dice_module as dice
 
-        cards = ["morse-card", "cubesat-card"]
+        cards = ["morse-card", "cubesat-card", "dice-card"]
         in_game = False
         TARGET_KEY = None
         active_game = None 
@@ -66,6 +78,8 @@
         action_timer = None
         press_start_time = 0
         just_bound = False
+
+        #The selection and launch of the program
 
         def launch_game(game_id):
             global in_game, active_game
@@ -80,6 +94,9 @@
                 active_game = 'CubeSAT'
                 document["game-title"].text = "=== ENGINE 2: Landing CubeSAT ==="
                 document["game-content"].text = "CubeSAT engine framework initialized!"
+            elif game_id == "dice-card":
+                active_game ="dice"
+                dice.init(TARGET_KEY)
 
         def check_selection():
             global tap_count 
@@ -95,6 +112,7 @@
             for card_id in cards:
                 document[card_id].className = "card"
 
+        # Mangaing the event i.e the orders of the king KEY 
         def handle_keydown(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
 
@@ -113,6 +131,8 @@
                 event.preventDefault()
                 if active_game == "morse":
                     morse.start_press()
+                elif active_game == "dice":
+                    dice.start_press()
                 return
 
             event.preventDefault()
@@ -120,6 +140,7 @@
                 press_start_time = time.time()
             if action_timer:
                 window.clearTimeout(action_timer)
+        
 
         def handle_keyup(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
@@ -133,6 +154,8 @@
                     event.preventDefault()
                     if active_game == "morse":
                         morse.stop_press()
+                    elif active_game == "dice":
+                        dice.stop_press()
                     return
                 
                 duration = time.time() - press_start_time
