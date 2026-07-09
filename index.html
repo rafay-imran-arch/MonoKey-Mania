@@ -21,22 +21,27 @@
 
                 <!--The morse program card-->
                 <div id="morse-card" class="card">
-                    <h3>1. Morse Course</h3>
+                    <h3>1.Morse Course</h3>
                     <p>Tap for Dot, Hold for Dash.</p>
-                </div>
-                <!--The CubeSAT program card (I will switch this to some else ysws)-->
-                <div id="cubesat-card" class="card">
-                    <h3>2. Landing CubeSAT</h3>
-                    <p>"Control the CubeSAT, DONT SMASH THE PAYLOAD"</p>
                 </div>
 
                 <!--The dice program card-->
                 <div id="dice-card", class="card">
-                    <h3>3. Roll A Dice</h3>
+                    <h3>2.Roll A Dice</h3>
                     <p>Roll a dice with just ONEKEY... Pretty simple eh?</p>
                 </div>
-                M
-
+                
+                <!--WikiTap program card-->
+                <div id="wiki-card", class="card">
+                    <h3>3.WikiTap </h3>
+                    <p>You are a tap away to harness the knowledge of the wiki-universe!</p>
+                </div>
+                
+                <!--CubeSAT program card-->
+                <div id="cubesat-card" class="card">
+                    <h3>4.Landing CubeSAT </h3>
+                    <p> Land the payload! using just one KEYEY</p>
+                </div>
             </div>
             <p class="instructions">
                 To determine a card choose the respective number from card menu (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
@@ -69,7 +74,7 @@
         import morse_module as morse
         import dice_module as dice
 
-        cards = ["morse-card", "cubesat-card", "dice-card"]
+        cards = ["morse-card", "dice-card", "wiki-card", "cubesat-card"]
         in_game = False
         TARGET_KEY = None
         active_game = None 
@@ -97,7 +102,12 @@
             elif game_id == "dice-card":
                 active_game ="dice"
                 dice.init(TARGET_KEY)
+            elif game_id == "wiki-card":
+                active_game = "wiki"
+                document["game-title"].text = "=== Engine 4: WikiTap ==="
+                document["game-content"].text = "WikiTap your one press knowledge point!"
 
+            
         def check_selection():
             global tap_count 
             target_index = tap_count - 1 

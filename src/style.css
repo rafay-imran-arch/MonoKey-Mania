@@ -6,45 +6,95 @@ body {
     flex-direction: column;
     align-items: center; 
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
     margin: 0;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 #terminal {
     display: inline-block;
     border: 2px solid #8c7a6b;
     border-radius: 6px;
-    padding: 25px;
+    padding: 35px;
     background-color: #fffdf9;
     box-shadow: 0 4px 0 #8c7a6b, 0 8px 15px rgba(74, 62, 61, 0.1);
     text-align: center;
-    max-width: 600px;
-    width: 100%;
+    max-width: 900px;
+    width: 95%;
     transition: all 0.1s ease;
 }
 
 .menu-container {
     display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 25px;
 }
 
 .card {
-    border: 2px dashed #bfae9e;
-    padding: 20px;
-    width: 40%;
-    transition: all 0.25s ease;
-    opacity: 0.5;
+    background-color: #f2ebd9;
+    border: 2px solid #b5a895;
+    border-radius: 12px;
+    padding: 15px 10px;
+    margin: 5px;
+    flex: 1%;
+    max-width: 140px;
+    min-width: 110px;
+    cursor: pointer;
+    font-family: monospace;
+    color: #4a3f35;
+
+    box-shadow:
+        inset 0 4px 0 rgba(255,255,255,0.6),
+        0 8px #b5a895,
+        0 12px 10px rgba(0, 0, 0, 0.15);
+
+    transition: all 0.1 ease;
+    position: relative;
+    top: 0;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    right: 8px;
+    bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.07));
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card h3, .card p {
+    position: relative;
+    z-index: 2;
+    margin: 5px 0;
+}
+.card h3 {
+    color: #8c7a6b;
+    font-size: 1.2em;
+}
+.card p {
+    font-size: 0.8em;
+    color: #8c7a6b;
 }
 
 .card.highlighted {
-    border: 2px solid #8c7a6b;
-    background-color: #fbf9f3;
-    transform: scale(1.05);
-    opacity: 1;
-    box-shadow: 0 4px 15px rgba(74, 62, 61, 0.12);
+    top: 6px;
+    background-color: #e3dac5;
+    box-shadow:
+        inset 0 2px 3px rgba(0, 0, 0, 0.1),
+        0 2px #b5a895,
+        0 4px 4px rgba(0, 0, 0, 0.1);
 }
+
+
 
 .instructions {
     color: #8c7a6b;
