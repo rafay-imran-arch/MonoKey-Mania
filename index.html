@@ -49,12 +49,19 @@
                     <h3>3.WikiTap </h3>
                     <p>You are a tap away to harness the knowledge of the wiki-universe!</p>
                 </div>
+
+                <!--Mongo typer card-->
+                <div id="mongo-card" class="card">
+                    <h3>4. TypingMongo </h3>
+                    <p>Slam that key!</p>
+                </div>
                 
                 <!--CubeSAT program card-->
                 <div id="cubesat-card" class="card">
-                    <h3>4.Landing CubeSAT </h3>
+                    <h3>5.Landing CubeSAT </h3>
                     <p> Land the payload! using just one KEYEY</p>
                 </div>
+
             </div>
             <p class="instructions">
                 To determine a card choose the respective number from key list (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
@@ -67,7 +74,7 @@
         <div id="game-view" class="game-screen">
             <div id="game-title">Loading...</div>
             <div id="game-content" style="margin-top: 20px; border: 1px solid #8c7a6b; padding: 20px; min-height: 100px;"></div>
-            <p style="font-size: 0.6em; color: #ff3333; margin-top: 20px;">[Refresh page to return to Main Menu]</p>
+            <p style="font-size: 0.6em; color: #E3DAC5; margin-top: 20px;">[Press key for 10s or refresh page to return to Main Menu]</p>
         </div>
     </div>
 
@@ -84,6 +91,7 @@
     <script type="text/python" src="src/morse.py" id="morse_module"></script>
     <script type="text/python" src="src/dice.py" id="dice_module"></script>
     <script type="text/python" src="src/wiki.py" id="wiki_module"></script>
+    <script type="text/python" src="src/mongo.py" id="mongo_module"></script>
     <script type="text/python">
 
         from browser import document, window 
@@ -93,6 +101,7 @@
         import morse_module as morse
         import dice_module as dice
         import wiki_module as wiki
+        import mongo_module as mongo
         
         click_audio = window.Audio.new("src/keyboard_click.mp3")
         
@@ -100,7 +109,7 @@
             click_audio.currentTime = 0
             click_audio.play()
 
-        cards = ["morse-card", "dice-card", "wiki-card", "cubesat-card"]
+        cards = ["morse-card", "dice-card", "wiki-card", "mongo-card", "cubesat-card"]
         in_game = False
         TARGET_KEY = None
         active_game = None 
@@ -123,7 +132,7 @@
                 morse.init(TARGET_KEY)
             elif game_id == "cubesat-card":
                 active_game = 'CubeSAT'
-                document["game-title"].text = "=== ENGINE 4: Landing CubeSAT ==="
+                document["game-title"].text = "=== ENGINE 5: Landing CubeSAT ==="
                 document["game-content"].text = "COMING SOON! LOOK UP! Yes in Space!"
             elif game_id == "dice-card":
                 active_game ="dice"
@@ -131,6 +140,9 @@
             elif game_id == "wiki-card":
                 active_game = "wiki"
                 wiki.init(TARGET_KEY)
+            elif game_id == "mongo-card":
+                active_game = "mongo"
+                mongo.init(TARGET_KEY)
 
             
         def check_selection():
@@ -189,12 +201,14 @@
             if in_game: 
                 if not event.repeat:
                     trigger_click_sound()
-                if active_game == "morse":
-                    morse.start_press()
-                elif active_game == "dice":
-                    dice.start_press()
-                elif active_game == "wiki":
-                    wiki.start_press()
+                    if active_game == "morse":
+                        morse.start_press()
+                    elif active_game == "dice":
+                        dice.start_press()
+                    elif active_game == "wiki":
+                        wiki.start_press()
+                    elif active_game == "mongo":
+                        mongo.start_press()
                 return
 
             trigger_click_sound()
@@ -224,6 +238,8 @@
                         dice.stop_press()
                     elif active_game == "wiki":
                         wiki.stop_press()
+                    elif  active_game == "mongo":
+                        mongo.stop_press()
                     return
 
                 tap_count += 1
