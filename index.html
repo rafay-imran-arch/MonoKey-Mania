@@ -9,8 +9,21 @@
 </head>
 <body onload="brython()">
     
-    <div id="terminal">
-        <h1>MonoKey Mania</h1>
+    <div class="terminal">
+        <h1 class="title-container"> 
+            <span class="keycap">M</span> 
+            <span class="keycap">O</span> 
+            <span class="keycap">N</span> 
+            <span class="keycap">O</span>
+            <span class="keycap">K</span> 
+            <span class="keycap">E</span> 
+            <span class="keycap"">Y</span> 
+            <span class="keycap">M</span>
+            <span class="keycap">A</span>
+            <span class="keycap">N</span>
+            <span class="keycap">I</span>
+            <span class="keycap">A</span>
+        </h1>
         <p style="font-style: italic; color: #8c7a6b; margin-top: -5px; margin-bottom: 5px;">
             One single key to rule them all!
         </p>
@@ -26,13 +39,13 @@
                 </div>
 
                 <!--The dice program card-->
-                <div id="dice-card", class="card">
+                <div id="dice-card" class="card">
                     <h3>2.Roll A Dice</h3>
                     <p>Roll a dice with just ONEKEY... Pretty simple eh?</p>
                 </div>
                 
                 <!--WikiTap program card-->
-                <div id="wiki-card", class="card">
+                <div id="wiki-card" class="card">
                     <h3>3.WikiTap </h3>
                     <p>You are a tap away to harness the knowledge of the wiki-universe!</p>
                 </div>
@@ -65,14 +78,19 @@
             <p style="font-size: 0.8em; color: #bfae9e;">(Spacebar, Enter or any other key works!)</p>
         </div>
     </div>
+
+    <!--Alternate because this brython is lacking unless I import like this-->
     <script type="text/python" src="src/morse.py" id="morse_module"></script>
     <script type="text/python" src="src/dice.py" id="dice_module"></script>
+    <script type="text/python" src="src/wiki.py" id="wiki_module"></script>
     <script type="text/python">
+
         from browser import document, window 
         import time 
         
         import morse_module as morse
         import dice_module as dice
+        import wiki_module as wiki
 
         cards = ["morse-card", "dice-card", "wiki-card", "cubesat-card"]
         in_game = False
@@ -97,15 +115,14 @@
                 morse.init(TARGET_KEY)
             elif game_id == "cubesat-card":
                 active_game = 'CubeSAT'
-                document["game-title"].text = "=== ENGINE 2: Landing CubeSAT ==="
-                document["game-content"].text = "CubeSAT engine framework initialized!"
+                document["game-title"].text = "=== ENGINE 4: Landing CubeSAT ==="
+                document["game-content"].text = "COMING SOON! LOOK UP! Yes in Space!"
             elif game_id == "dice-card":
                 active_game ="dice"
                 dice.init(TARGET_KEY)
             elif game_id == "wiki-card":
                 active_game = "wiki"
-                document["game-title"].text = "=== Engine 4: WikiTap ==="
-                document["game-content"].text = "WikiTap your one press knowledge point!"
+                wiki.init(TARGET_KEY)
 
             
         def check_selection():
@@ -143,6 +160,8 @@
                     morse.start_press()
                 elif active_game == "dice":
                     dice.start_press()
+                elif active_game == "wiki":
+                    wiki.start_press()
                 return
 
             event.preventDefault()
@@ -166,7 +185,10 @@
                         morse.stop_press()
                     elif active_game == "dice":
                         dice.stop_press()
+                    elif active_game == "wiki":
+                        wiki.stop_press()
                     return
+                    
                 
                 duration = time.time() - press_start_time
                 press_start_time = 0
