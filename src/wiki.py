@@ -53,7 +53,7 @@ def on_api_complete(req):
         document["wiki-display-box"].html = f"""
         <strong style="color: #8c7a6b; font-size: 1.1em; display: block; border-bottom: 1px dashed #b5a895;
         padding-bottom: 5px; margin-bottom: 10px;">
-            NODE: {title}
+            Source: {title}
         </strong>
         <p style="margin: 0; font-family: 'Courier New', monospace;">{extract}</p>
         """ 

@@ -17,7 +17,7 @@
             <span class="keycap">O</span>
             <span class="keycap">K</span> 
             <span class="keycap">E</span> 
-            <span class="keycap"">Y</span> 
+            <span class="keycap">Y</span> 
             <span class="keycap">M</span>
             <span class="keycap">A</span>
             <span class="keycap">N</span>
@@ -57,8 +57,9 @@
                 </div>
             </div>
             <p class="instructions">
-                To determine a card choose the respective number from card menu (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
-                Hold key for 5 seconds to reset selection.
+                To determine a card choose the respective number from key list (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
+                Hold key for 5 seconds to reset selection.<br>
+                After passing the last key wait for a  few seconds
             </p>
             <hr style="border: 1px solid #9F8C76; margin-top: 20px;">
         </div>
@@ -87,10 +88,17 @@
 
         from browser import document, window 
         import time 
+        import random
         
         import morse_module as morse
         import dice_module as dice
         import wiki_module as wiki
+        
+        click_audio = window.Audio.new("src/keyboard_click.mp3")
+        
+        def trigger_click_sound():
+            click_audio.currentTime = 0
+            click_audio.play()
 
         cards = ["morse-card", "dice-card", "wiki-card", "cubesat-card"]
         in_game = False
@@ -139,6 +147,24 @@
             for card_id in cards:
                 document[card_id].className = "card"
 
+        def return_to_menu():
+            global in_game, active_game, tap_count, press_start_time
+            in_game = False
+            active_game = None
+            tap_count = 0 
+            press_start_time = 0
+
+            document["game-view"].style.display = "none"
+            document["menu-view"].style.display = "block"
+
+            document["game-title"].text = "Loading..."
+            document["game-content"].text = ""
+
+            for card_id in cards:
+                document[card_id].className = "card"
+
+            trigger_click_sound()
+
         # Mangaing the event i.e the orders of the king KEY 
         def handle_keydown(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
@@ -150,12 +176,19 @@
                 document["key-display"].text = display_name
                 document["key-binder-overlay"].style.display = "none"
                 just_bound = True
+                trigger_click_sound()
                 return
 
             if event.code != TARGET_KEY: return
-
-            if in_game:
-                event.preventDefault()
+            
+            event.preventDefault()
+            
+            if press_start_time == 0:
+                press_start_time = time.time()
+            
+            if in_game: 
+                if not event.repeat:
+                    trigger_click_sound()
                 if active_game == "morse":
                     morse.start_press()
                 elif active_game == "dice":
@@ -164,12 +197,9 @@
                     wiki.start_press()
                 return
 
-            event.preventDefault()
-            if press_start_time == 0:
-                press_start_time = time.time()
+            trigger_click_sound()
             if action_timer:
                 window.clearTimeout(action_timer)
-        
 
         def handle_keyup(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
@@ -177,6 +207,13 @@
             if TARGET_KEY and event.code == TARGET_KEY:
                 if just_bound:
                     just_bound = False
+                    return
+
+                duration = time.time() - press_start_time
+                press_start_time = 0
+
+                if duration >= 10.0:
+                    return_to_menu()
                     return
 
                 if in_game:
@@ -188,21 +225,32 @@
                     elif active_game == "wiki":
                         wiki.stop_press()
                     return
-                    
-                
-                duration = time.time() - press_start_time
-                press_start_time = 0
-
-                if duration >= 5.0:
-                    reset_menu()
-                    return
 
                 tap_count += 1
                 for i, card_id in enumerate(cards):
                     document[card_id].className = "card highlighted" if i == (tap_count - 1) else "card"
 
                 action_timer = window.setTimeout(check_selection, 1500)
-            
+        
+    
+
+        # the visual animation of the title keycaps that I wnat to do:
+        title_letters = document.select('.title-container .keycap')
+        
+        def auto_release(letter):
+            letter.classList.remove('pressed')
+
+        def ghost_press_tick():
+            if title_letters:
+                if random.random() < 0.15:
+                    random_letter = random.choice(title_letters)
+
+                    if not random_letter.classList.contains('pressed'):
+                        random_letter.classList.add('pressed')
+
+                        window.setTimeout(lambda: auto_release(random_letter),150)
+
+        window.setInterval(ghost_press_tick,150)
         window.bind("keydown", handle_keydown)
         window.bind("keyup", handle_keyup)
         document["key-display"].text = "READY! PRESS ANY KEY TO BIND"
