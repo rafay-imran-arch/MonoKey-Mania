@@ -19,6 +19,21 @@ def init(target_key):
 
 def render_conf_view(image_src):
     document["game-content"].html = f"""
+        <div style="text-align: center; font-family: monospace; color: #8a7c6b;">
+            <p style="font-size: 1.1em; font-weight: bold; margin-bottom: 10px;"> SETUP YOUR PHRASE</p>
+            <textarea id="custom-phrase-input" placeholder="Type custom phrase here.."
+                style="width: 80%; height: 60px; background: #1a1a1a; color: #E3DAC5; border: 2px solid #8c7a6b; font-family: monospace; padding: 8px; resize: none; margin-bottom: 10px;"></textarea>
+            <p style="font-size: 0.85em; color: #bfae9e; margin-bottom: 15px;">
+                Click the text box to add custom phrase. <br>
+                Leave blank for default phrase. <br>
+                Click outside the text box and press the registered key! <br>
+                Press the Key for 5s to retrun to menu
+            </p>
+        </div> 
+    """ 
+
+def render_view(image_src):
+    document["game-content"].html = f"""
         <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <!--Mongo max?-->
             <img src="{image_src}" alt="Typing Max" style="max-width: 320px; height: auto; padding: 5px;" />
@@ -32,6 +47,12 @@ def render_conf_view(image_src):
             {revealed_text}<span style="animation: blink 1s infinite;">_</span> 
         </div>
     """ 
+def start_engine():
+    global is_configured, secret_phrase
+    user_input = document["custom-phrase-input"].value.strip().upper()
+    secret_phrase = user_input if user_input else "Come on Just try it once!"
+    is_configured = True 
+    render_view(img_down)
 
 def start_press():
     global total_slams, revealed_text, is_configured

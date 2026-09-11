@@ -42,8 +42,9 @@ def init(bound_key):
         <p style="font-size:0.7em;margin-top:15px;color:#bfae9e;">
             Tap = Dot (.) &nbsp;&nbsp; Hold = Dash (-)<br>
             Pause briefly to finish a letter.<br>
-            Pause longer to insert a space. <br>
-            Press key for 10s to clear
+            Pause longer to insert a space. <br> 
+            Press key for 10s to clear. <br>
+            Press the key for 5s - 6s to return to menu
         </p>
     </div>
     """

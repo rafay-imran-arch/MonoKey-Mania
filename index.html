@@ -223,6 +223,10 @@
 
             if event.code != TARGET_KEY: return
             
+            active_el = document.activeElement
+            if active_el and active_el.tagName in ["TEXTAREA", "INPUT"]:
+                return
+
             event.preventDefault()
             
             if press_start_time == 0:
@@ -250,6 +254,11 @@
         def handle_keyup(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
             
+
+            active_el = document.activeElement
+            if active_el and active_el.tagName in ["TEXTAREA", "INPUT"]:
+                return 
+                
             if TARGET_KEY and event.code == TARGET_KEY:
                 if just_bound:
                     just_bound = False
@@ -259,10 +268,15 @@
                 duration = time.time() - press_start_time
                 press_start_time = 0
                 reset_hold_bar()
-
-                if duration >= HOLD_EXIT_THRESHOLD:
-                    return_to_menu()
-                    return
+                
+                if active_game == "morse":
+                    if (duration >= 5.0) and (duration <= 6):
+                        return_to_menu()
+                        return
+                else:
+                    if duration >= HOLD_EXIT_THRESHOLD:
+                        return_to_menu()
+                        return
 
                 if in_game:
                     event.preventDefault()
