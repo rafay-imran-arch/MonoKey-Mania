@@ -58,8 +58,8 @@
                 
                 <!--CubeSAT program card-->
                 <div id="cubesat-card" class="card">
-                    <h3>5.Landing CubeSAT </h3>
-                    <p> Land the payload! using just one KEYEY</p>
+                    <h3>5.Coming Soon</h3>
+                    <p>Keep Keying and Keep thinking what will be next!</p>
                 </div>
 
             </div>
@@ -78,11 +78,13 @@
         </div>
     </div>
 
-    <div id="hold-bar-container" style="position: fixed; bottom: 20px; left: 20px; width: 220px; background-color: #9F8C76; border: 2px solid #0000; padding: 6px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.7); z-index: 999999; pointer-events: none;">
-        <div id="hold-timer-text" style="font-family: monospace; font-size: 0.85em; color: #E3DAC5; text-align: center; margin-bottom: 4px; font-weight: bold;">
+    <div id="hold-bar-container" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 220px; background-color: #f2ebd9; border-radius: 8px; padding: 14px 10px; box-shadow: inset 0 4px 0 rgba(255,255,255,0.6), 0 8px 0 #b5a895, 0 12px 10px rgba(0,0,0,0.15); z-index: 999999; pointer-events: none; border: 1px solid rgba(255,255,255,0.4); box-sizing: border-box;">        
+        <div style="position: absolute; top:5px; left:6px; right:6px; bottom: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.5); background: linear-gradient(to bottom, rgba(0,0,0,0.01), rgba(0,0,0,0.06)); pointer-events: none; z-index: 1;"> </div>
+        
+        <div id="hold-timer-text" style="font-family: monospace; font-size: 0.85em; color: #8c7a6b; text-align: center; margin-bottom: 6px; font-weight: bold; position: relative; z-index: 2;">
             Hold: 0.0s / 5.0s
         </div>
-        <div style="width: 100%; background-color: #2b2b2b; height: 14px; border: 1px solid #8c7a6b;">
+        <div style="width: 100%; background-color: #e3dac5; height: 12px; border: 1px solid #b5a895; overflow: hidden; position: relative; z-index: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); box-sizing: border-box;">
             <div id="hold-bar-fill" style="width: 0%; height: 100%; background-color: #8a7c6b; transition: width 0.05s linear;"> </div>
         </div>
     </div>
@@ -160,7 +162,7 @@
                 morse.init(TARGET_KEY)
             elif game_id == "cubesat-card":
                 active_game = 'CubeSAT'
-                document["game-title"].text = "=== ENGINE 5: Landing CubeSAT ==="
+                document["game-title"].text = "=== ENGINE 5: COMING SOON! ==="
                 document["game-content"].text = "COMING SOON! LOOK UP! Yes in Space!"
             elif game_id == "dice-card":
                 active_game ="dice"
@@ -258,7 +260,7 @@
             active_el = document.activeElement
             if active_el and active_el.tagName in ["TEXTAREA", "INPUT"]:
                 return 
-                
+
             if TARGET_KEY and event.code == TARGET_KEY:
                 if just_bound:
                     just_bound = False
