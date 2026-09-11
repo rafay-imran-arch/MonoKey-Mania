@@ -6,16 +6,18 @@ img_down = "src/bongo1.png"
 
 total_slams = 0
 revealed_text = ""
-secret_phrase = "Thank you! MAX the one true King of ONEKEY land. Thank you so much. I knew the ONE-KEY was real"
+secret_phrase = ""
+is_configured = False
 
 def init(target_key):
-    global total_slams, revealed_text
+    global total_slams, revealed_text, is_configured 
     total_slams = 0
     revealed_text = ""
+    is_configured = False 
     document["game-title"].text = "===Engine 4: TypingMongo ==="
-    render_view(img_down)
+    render_conf_view(img_down)
 
-def render_view(image_src):
+def render_conf_view(image_src):
     document["game-content"].html = f"""
         <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <!--Mongo max?-->
@@ -32,7 +34,11 @@ def render_view(image_src):
     """ 
 
 def start_press():
-    global total_slams, revealed_text
+    global total_slams, revealed_text, is_configured
+
+    if not is_configured:
+        start_engine()
+        return 
     total_slams += 1
 
     if len(revealed_text) < len(secret_phrase):

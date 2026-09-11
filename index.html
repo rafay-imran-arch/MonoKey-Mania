@@ -64,7 +64,7 @@
 
             </div>
             <p class="instructions">
-                To determine a card choose the respective number from key list (1 tap = Morse, 2 Taps = CubeSAT). Pause 1.5 seconds to launch! <br>
+                To determine a Key(program) choose the respective number from key list (1 tap = Morse, 2 Taps = Roll A Dice). Pause 1.5 seconds to launch! <br>
                 Hold key for 5 seconds to reset selection.<br>
                 After passing the last key wait for a  few seconds
             </p>
@@ -74,7 +74,16 @@
         <div id="game-view" class="game-screen">
             <div id="game-title">Loading...</div>
             <div id="game-content" style="margin-top: 20px; border: 1px solid #8c7a6b; padding: 20px; min-height: 100px;"></div>
-            <p style="font-size: 0.6em; color: #E3DAC5; margin-top: 20px;">[Press key for 10s or refresh page to return to Main Menu]</p>
+            <p style="font-size: 0.6em; color: #E3DAC5; margin-top: 20px;">[Press key for 5s or refresh page to return to Main Menu]</p>
+        </div>
+    </div>
+
+    <div id="hold-bar-container" style="position: fixed; bottom: 20px; left: 20px; width: 220px; background-color: #9F8C76; border: 2px solid #0000; padding: 6px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.7); z-index: 999999; pointer-events: none;">
+        <div id="hold-timer-text" style="font-family: monospace; font-size: 0.85em; color: #E3DAC5; text-align: center; margin-bottom: 4px; font-weight: bold;">
+            Hold: 0.0s / 5.0s
+        </div>
+        <div style="width: 100%; background-color: #2b2b2b; height: 14px; border: 1px solid #8c7a6b;">
+            <div id="hold-bar-fill" style="width: 0%; height: 100%; background-color: #8a7c6b; transition: width 0.05s linear;"> </div>
         </div>
     </div>
 
@@ -94,7 +103,7 @@
     <script type="text/python" src="src/mongo.py" id="mongo_module"></script>
     <script type="text/python">
 
-        from browser import document, window 
+        from browser import document, window, timer
         import time 
         import random
         
@@ -119,6 +128,25 @@
         press_start_time = 0
         just_bound = False
 
+        bar_update_timer = None
+        HOLD_EXIT_THRESHOLD = 5.0
+
+        def update_hold_bar_tick():
+            global press_start_time
+            if press_start_time > 0:
+                elapsed = time.time() - press_start_time
+                percent = min(100, (elapsed / HOLD_EXIT_THRESHOLD) * 100)
+
+                document["hold-bar-fill"].style.width = f"{percent}%"
+                document["hold-timer-text"].text = f"Hold: {elapsed:.1f}s / {HOLD_EXIT_THRESHOLD:.1f}s"
+
+        def reset_hold_bar():
+            global bar_update_timer
+            if bar_update_timer is not None: 
+                timer.clear_interval(bar_update_timer)
+                bar_update_timer = None 
+            document["hold-bar-fill"].style.width = "0%"
+            document["hold-timer-text"].text = f"Hold: 0.0s / {HOLD_EXIT_THRESHOLD:.1f}s"
         #The selection and launch of the program
 
         def launch_game(game_id):
@@ -166,6 +194,8 @@
             tap_count = 0 
             press_start_time = 0
 
+            reset_hold_bar()
+
             document["game-view"].style.display = "none"
             document["menu-view"].style.display = "block"
 
@@ -179,7 +209,7 @@
 
         # Mangaing the event i.e the orders of the king KEY 
         def handle_keydown(event):
-            global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
+            global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound, bar_update_timer
 
             if TARGET_KEY is None:
                 event.preventDefault()
@@ -197,6 +227,8 @@
             
             if press_start_time == 0:
                 press_start_time = time.time()
+                if bar_update_timer is None:
+                    bar_update_timer = timer.set_interval(update_hold_bar_tick, 50)
             
             if in_game: 
                 if not event.repeat:
@@ -221,12 +253,14 @@
             if TARGET_KEY and event.code == TARGET_KEY:
                 if just_bound:
                     just_bound = False
+                    reset_hold_bar()
                     return
 
                 duration = time.time() - press_start_time
                 press_start_time = 0
+                reset_hold_bar()
 
-                if duration >= 10.0:
+                if duration >= HOLD_EXIT_THRESHOLD:
                     return_to_menu()
                     return
 
