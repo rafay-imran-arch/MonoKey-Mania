@@ -1,7 +1,8 @@
 # MonoKey-Mania
 A retro-themed single-key web arcade. (Inspired for onekey HackClub)
 You can only use a SINGLE KEY
-<img width="1920" height="932" alt="Screenshot 2026-07-12 at 02-55-23 MonoKey Mania" src="https://github.com/user-attachments/assets/9c01abe2-c28e-4788-b3cf-c4238ba14090" />
+<img width="1852" height="932" alt="Menu Page MonoKey Mania" src="https://github.com/user-attachments/assets/6a1cb065-2210-476c-81cf-9aa33e78bdbd" />
+
 
 ---
 ### Initial Plan:
