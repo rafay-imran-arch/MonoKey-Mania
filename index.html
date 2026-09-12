@@ -82,7 +82,7 @@
         <div style="position: absolute; top:5px; left:6px; right:6px; bottom: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.5); background: linear-gradient(to bottom, rgba(0,0,0,0.01), rgba(0,0,0,0.06)); pointer-events: none; z-index: 1;"> </div>
         
         <div id="hold-timer-text" style="font-family: monospace; font-size: 0.85em; color: #8c7a6b; text-align: center; margin-bottom: 6px; font-weight: bold; position: relative; z-index: 2;">
-            Hold: 0.0s / 5.0s
+            [KEY] Hold: 0.0s / 5.0s
         </div>
         <div style="width: 100%; background-color: #e3dac5; height: 12px; border: 1px solid #b5a895; overflow: hidden; position: relative; z-index: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); box-sizing: border-box;">
             <div id="hold-bar-fill" style="width: 0%; height: 100%; background-color: #8a7c6b; transition: width 0.05s linear;"> </div>
@@ -133,22 +133,36 @@
         bar_update_timer = None
         HOLD_EXIT_THRESHOLD = 5.0
 
+        def get_key_name():
+            global TARGET_KEY
+            if not TARGET_KEY:
+                return "KEY"
+            if TARGET_KEY == "Space":
+                return "SPACE"
+            if TARGET_KEY.startswith("Key"):
+                return TARGET_KEY[3:]
+            return TARGET_KEY.upper()
+
         def update_hold_bar_tick():
             global press_start_time
             if press_start_time > 0:
                 elapsed = time.time() - press_start_time
                 percent = min(100, (elapsed / HOLD_EXIT_THRESHOLD) * 100)
-
+                
+                key_label = get_key_name()
                 document["hold-bar-fill"].style.width = f"{percent}%"
-                document["hold-timer-text"].text = f"Hold: {elapsed:.1f}s / {HOLD_EXIT_THRESHOLD:.1f}s"
+                document["hold-timer-text"].text = f"[{key_label}] Hold: {elapsed:.1f}s / {HOLD_EXIT_THRESHOLD:.1f}s"
 
         def reset_hold_bar():
             global bar_update_timer
             if bar_update_timer is not None: 
                 timer.clear_interval(bar_update_timer)
                 bar_update_timer = None 
+
+            key_label = get_key_name()
+            document["hold-bar-container"].classList.remove("pressed")
             document["hold-bar-fill"].style.width = "0%"
-            document["hold-timer-text"].text = f"Hold: 0.0s / {HOLD_EXIT_THRESHOLD:.1f}s"
+            document["hold-timer-text"].text = f"[{key_label}] Hold: 0.0s / {HOLD_EXIT_THRESHOLD:.1f}s"
         #The selection and launch of the program
 
         def launch_game(game_id):
@@ -221,6 +235,7 @@
                 document["key-binder-overlay"].style.display = "none"
                 just_bound = True
                 trigger_click_sound()
+                reset_hold_bar()
                 return
 
             if event.code != TARGET_KEY: return
@@ -231,6 +246,8 @@
 
             event.preventDefault()
             
+            document["hold-bar-container"].classList.add("pressed")
+
             if press_start_time == 0:
                 press_start_time = time.time()
                 if bar_update_timer is None:
@@ -255,7 +272,7 @@
 
         def handle_keyup(event):
             global TARGET_KEY, tap_count, action_timer, press_start_time, just_bound
-            
+            document["hold-bar-container"].classList.remove("pressed")
 
             active_el = document.activeElement
             if active_el and active_el.tagName in ["TEXTAREA", "INPUT"]:

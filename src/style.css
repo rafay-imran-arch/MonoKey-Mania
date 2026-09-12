@@ -219,6 +219,19 @@ body {
     transform: translateY(4px);
 }
 
+#hold-bar-container {
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+#hold-bar-container.pressed {
+    transform: translateX(-50%) translateY(6px) !important;
+    box-shadow:
+        inset 0 2px 3px rgba(0,0,0,0.1),
+        0 2px 0 #b5a895,
+        0 4px 4px rgba(0,0,0,0.1) !important; 
+    filter: brightness(0.88) !important;
+}
+
 .title-container {
     display: flex;
     flex-direction: row;
