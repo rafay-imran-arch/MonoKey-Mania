@@ -73,33 +73,42 @@ def add_space():
         translated_text += " "
         document["morse-output"].text = translated_text
 
+def clear_timers():
+    global letter_timer, word_timer
+    if letter_timer:
+        window.clearTimeout(letter_timer)
+        letter_timer = None
+    if word_timer: 
+        window.clearTimeout(word_timer)
+        word_timer = None
+
 def start_press():
-    global press_start_time, letter_timer, word_timer
-    if letter_timer: window.clearTimeout(letter_timer); letter_timer = None
-    if word_timer: window.clearTimeout(word_timer); word_timer = None
-    if press_start_time == 0: press_start_time = time.time()
+    global press_start_time
+
+    clear_timers()
+    if press_start_time == 0: 
+        press_start_time = time.time()
 
 def stop_press():
-    global press_start_time, current_morse_sequence, letter_timer, word_timer
+    global press_start_time, current_morse_sequence, translated_text, letter_timer, word_timer
     if press_start_time == 0: return
 
     duration = time.time() - press_start_time
     press_start_time = 0
-    current_morse_sequence += "." if duration < DOT_THRESHOLD else "-"
 
-    if duration >= 10:
+    
+    if duration >= 10.0:
         translated_text = ""
         current_morse_sequence = ""
         update_buffer()
         document["morse-output"].text = ""
-    
-        if letter_timer: window.clearTimeout(letter_timer); letter_timer = None
-        if word_timer: window.clearTimeout(word_timer); word_timer = None
-        return
-    update_buffer()
+        return 
 
-    if letter_timer: window.clearTimeout(letter_timer)
-    if word_timer: window.clearTimeout(word_timer)
+    if 5.0 <= duration <=6.0:
+        return
+
+    current_morse_sequence += "." if duration < DOT_THRESHOLD else "-"
+    update_buffer()
 
     letter_timer = window.setTimeout(parse_signal, LETTER_PAUSE)
     word_timer = window.setTimeout(add_space, WORD_PAUSE)
